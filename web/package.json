@@ -1,0 +1,45 @@
+{
+  "name": "ragent-web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "verify:rag-e2e": "node ./scripts/verify-rag-e2e.mjs",
+    "verify:async-ingestion-e2e": "node ./scripts/verify-async-ingestion-e2e.mjs",
+    "verify:document-upload-e2e": "node ./scripts/verify-document-upload-e2e.mjs",
+    "verify:vector-db-e2e": "node ./scripts/verify-vector-db-e2e.mjs",
+    "verify:tika-parser-e2e": "node ./scripts/verify-tika-parser-e2e.mjs",
+    "verify:tika-real-e2e": "node ./scripts/verify-tika-real-e2e.mjs",
+    "verify:mcp-runtime-e2e": "node ./scripts/verify-mcp-runtime-e2e.mjs",
+    "verify:auth-scope-e2e": "node ./scripts/verify-auth-scope-e2e.mjs",
+    "verify:oidc-e2e": "node ./scripts/verify-oidc-e2e.mjs",
+    "verify:smoke-phase1": "npm run verify:rag-e2e && npm run verify:async-ingestion-e2e && npm run verify:auth-scope-e2e && npm run verify:mcp-runtime-e2e && npm run verify:vector-db-e2e",
+    "eval": "npx tsx lib/eval/eval-runner.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/react": "^3.0.0",
+    "ai": "^6.0.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.453.0",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.5.5",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.8.3"
+  }
+}

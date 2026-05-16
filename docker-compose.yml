@@ -1,0 +1,59 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.13
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 5s
+      retries: 5
+
+  bge-reranker:
+    image: nageoffer/bge-reranker-v2-m3:latest
+    ports:
+      - "8091:80"
+
+  go-retrieval:
+    build:
+      context: .
+      dockerfile: go/retrievalexecutor/Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      PORT: "8090"
+      INTERNAL_API_TOKEN: "dev-token-change-me"
+      AUTH_SESSION_SECRET: "dev-secret-change-in-production"
+      GO_INGESTION_RUNNER_ENABLED: "true"
+      GO_RETRIEVAL_MODE: "hybrid"
+      GO_RETRIEVAL_SOURCE: "indexed-store"
+      GO_INGESTION_TASK_STORE_BACKEND: "sqlite"
+      GO_INDEX_METADATA_STORE_BACKEND: "sqlite"
+      GO_INDEX_VECTOR_STORE_BACKEND: "qdrant"
+      QDRANT_URL: "http://qdrant:6333"
+      QDRANT_COLLECTION: "ragent_knowledge"
+      BGE_RERANKER_URL: "http://bge-reranker:80/rerank"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      bge-reranker:
+        condition: service_started
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: "production"
+      PORT: "3000"
+      AUTH_SESSION_SECRET: "dev-secret-change-in-production"
+      GO_INGESTION_BASE_URL: "http://go-retrieval:8090"
+      GO_RETRIEVAL_ENDPOINT: "http://go-retrieval:8090/internal/retrieval/search"
+    depends_on:
+      - go-retrieval
+
+volumes:
+  qdrant_data:

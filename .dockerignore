@@ -1,0 +1,10 @@
+.git
+.claude
+node_modules
+.next
+*.md
+docs
+frontend
+assets
+resources
+scripts
